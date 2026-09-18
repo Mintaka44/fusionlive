@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation - Fusion Live</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b2871;
+            --primary-hover: #a8338a;
+            --dark: #0f0a1e;
+            --dark-card: #1b1333;
+            --light: #f8f9fa;
+            --accent: #ffc107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+
+        /* En-tête / Header simplifié */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 10, 30, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--light);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Contenu principal de réservation */
+        .reservation-container {
+            max-width: 1150px;
+            margin: 120px auto 60px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+        }
+
+        /* Texte d'introduction demandé */
+        .intro-text {
+            background: var(--dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px 30px;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 1.05rem;
+            color: #ddd;
+            line-height: 1.7;
+        }
+
+        .intro-text strong {
+            color: var(--accent);
+            display: block;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* Sélecteur des 4 dates (onglets) */
+        .date-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .date-tab {
+            background: var(--dark-card);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--light);
+        }
+
+        .date-tab:hover {
+            border-color: var(--primary-hover);
+            transform: translateY(-3px);
+        }
+
+        /* Style de la date active (en cours de réservation) */
+        .date-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(139, 40, 113, 0.4);
+        }
+
+        .date-tab h3 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .date-tab p {
+            font-size: 0.85rem;
+            color: #ddd;
+        }
+
+        /* Barre d'action intermédiaire (Boutons HelloAsso global & Partager) */
+        .action-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ddd;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 22px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Menu déroulant de partage */
+        .share-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .share-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 115%;
+            background: #1b1333;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 230px;
+            z-index: 100;
+            overflow: hidden;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .share-dropdown.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .share-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #eee;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+        }
+
+        .share-option:last-child {
+            border-bottom: none;
+        }
+
+        .share-option:hover {
+            background: rgba(139, 40, 113, 0.3);
+            color: white;
+        }
+
+        .share-option svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* Message de confirmation de copie de lien */
+        #copyToast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease-in-out;
+            z-index: 2000;
+        }
+
+        #copyToast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Conteneur du widget HelloAsso */
+        .widget-box {
+            background: var(--dark-card);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 780px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .widget-wrapper {
+            width: 100%;
+            height: 820px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Footer */
+        footer {
+            background: #080510;
+            padding: 30px 10%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #888;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- En-tête -->
+    <header>
+        <a href="index.html" class="logo">FUSION <span>LIVE</span></a>
+        <a href="index.html" class="btn-back">← Retour au site</a>
+    </header>
+
+    <div class="reservation-container">
+        <h1>Réservation en ligne</h1>
+
+        <!-- Texte d'introduction -->
+        <div class="intro-text">
+            Venez nombreux encourager les artistes de Fusion Live et partager avec eux ces quatre représentations placées sous le signe du rire, de l'émotion et du spectacle ! <br/> 
+		Tarifs : de 8€ à 14€ — Places limitées (et croyez-nous, ça part vite !)
+            <strong>Fusion Live vous attend !</strong>
+        </div>
+
+        <!-- Les 4 onglets de dates -->
+        <div class="date-tabs">
+            <div class="date-tab" onclick="selectDate('date1')" id="tab-date1">
+                <h3>Samedi 14 Nov</h3>
+                <p>20h00 – Salle des Fêtes</p>
+            </div>
+            <div class="date-tab" onclick="selectDate('date2')" id="tab-date2">
+                <h3>Dimanche 15 Nov</h3>
+                <p>15h00 – Salle des Fêtes</p>
+            </div>
+            <div class="date-tab" onclick="selectDate('date3')" id="tab-date3">
+                <h3>Vendredi 20 Nov</h3>
+                <p>20h00 – Salle des Fêtes</p>
+            </div>
+            <div class="date-tab" onclick="selectDate('date4')" id="tab-date4">
+                <h3>Samedi 21 Nov</h3>
+                <p>20h00 – Salle des Fêtes</p>
+            </div>
+        </div>
+
+        <!-- Barre d'action : Lien HelloAsso Global + Bouton Partager interactif -->
+        <div class="action-bar">
+            <a href="https://www.helloasso.com/associations/nom-de-ton-association" target="_blank" rel="noopener noreferrer" class="btn-action">
+                🎟️ Voir toutes nos dates sur HelloAsso ↗
+            </a>
+
+            <!-- Menu Partager -->
+            <div class="share-container">
+                <button class="btn-action" onclick="toggleShareMenu(event)">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+                    Partager <span style="font-size: 0.75rem;">▼</span>
+                </button>
+
+                <div class="share-dropdown" id="shareDropdown">
+                    <a href="#" class="share-option" onclick="shareTo('facebook')">
+                        <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        Facebook
+                    </a>
+                    <a href="#" class="share-option" onclick="shareTo('twitter')">
+                        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        ex Twitter
+                    </a>
+                    <a href="#" class="share-option" onclick="shareTo('linkedin')">
+                        <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        LinkedIn
+                    </a>
+                    <a href="#" class="share-option" onclick="shareTo('whatsapp')">
+                        <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                        WhatsApp
+                    </a>
+                    <a href="#" class="share-option" onclick="shareTo('email')">
+                        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        Email
+                    </a>
+                    <a href="#" class="share-option" onclick="copyUrl()">
+                        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                        Copier l'URL
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone d'affichage du widget HelloAsso -->
+        <div class="widget-box" id="widgetContainer">
+            <!-- Les iframes HelloAsso s'injecteront ici dynamiquement -->
+        </div>
+    </div>
+
+    <!-- Notification toast de copie -->
+    <div id="copyToast">Lien copié dans le presse-papier !</div>
+
+    <footer>
+        <p>© 2026 Fusion Live - Saint-Martin-des-Noyers. Tous droits réservés.</p>
+    </footer>
+
+    <!-- Script de gestion dynamique -->
+    <script>
+        const helloAssoWidgets = {
+            date1: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-samedi-14-11-2027/widget",
+            date2: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-dimanche-15-11-2027/widget",
+            date3: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-vendredi-20-11-2027/widget",
+			date4: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-fusion-live-test/widget"
+            // date4: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-samedi-21-11-2027/widget"
+        };
+
+        function selectDate(dateKey) {
+            document.querySelectorAll('.date-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            const activeTab = document.getElementById('tab-' + dateKey);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+
+            const container = document.getElementById('widgetContainer');
+            const url = helloAssoWidgets[dateKey];
+            
+            if (url) {
+                container.innerHTML = `
+                    <div class="widget-wrapper">
+                        <iframe src="${url}" title="Billetterie HelloAsso" allowpaymentrequest></iframe>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `<p style="color: #aaa;">Lien de billetterie bientôt disponible pour cette date.</p>`;
+            }
+        }
+
+        // Gestion du menu de partage
+        function toggleShareMenu(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('shareDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Fermer le menu si on clique ailleurs sur la page
+        window.addEventListener('click', () => {
+            const dropdown = document.getElementById('shareDropdown');
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Actions de partage
+        function shareTo(platform) {
+            const currentUrl = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent("Viens réserver tes places pour le spectacle de Fusion Live !");
+            let shareUrl = "";
+
+            if (platform === 'facebook') {
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
+            } else if (platform === 'twitter') {
+                shareUrl = `https://twitter.com/intent/tweet?url=${currentUrl}&text=${text}`;
+            } else if (platform === 'linkedin') {
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
+            } else if (platform === 'whatsapp') {
+                shareUrl = `https://api.whatsapp.com/send?text=${text}%20${currentUrl}`;
+            } else if (platform === 'email') {
+                shareUrl = `mailto:?subject=${encodeURIComponent("Spectacle Fusion Live")}&body=${text}%20${window.location.href}`;
+            }
+
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        }
+
+        // Copier l'URL
+        function copyUrl() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            });
+        }
+
+        // Initialisation au chargement
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedDate = urlParams.get('date');
+
+            if (requestedDate && helloAssoWidgets[requestedDate]) {
+                selectDate(requestedDate);
+            } else {
+                selectDate('date1');
+            }
+        });
+    </script>
+</body>
+</html>
