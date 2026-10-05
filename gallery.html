@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie & Souvenirs - Fusion Live</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b2871;
+            --primary-hover: #a8338a;
+            --dark: #0f0a1e;
+            --dark-card: #1b1333;
+            --light: #f8f9fa;
+            --accent: #ffc107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+        }
+
+        /* En-tête / Header simplifié */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 10, 30, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--light);
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+		
+		.logo-img {
+			height: 35px;
+			width: auto;
+			object-fit: contain;
+			filter: invert(1);
+		}
+
+        .btn-back {
+            background: transparent;
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Conteneur principal de la galerie */
+        .gallery-container {
+            max-width: 1150px;
+            margin: 120px auto 60px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ddd;
+            margin-bottom: 35px;
+            font-size: 1.05rem;
+        }
+
+        /* Boutons de filtres */
+        .gallery-filters {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--dark-card);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            padding: 10px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(139, 40, 113, 0.4);
+            font-weight: 600;
+        }
+
+        /* Grille des médias */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            background: var(--dark-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(139, 40, 113, 0.3);
+            border-color: var(--primary);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Badge "Play" visuel pour les vidéos sur la grille */
+        .video-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(139, 40, 113, 0.85);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, background 0.3s ease;
+            pointer-events: none; /* Laisse le clic traverser vers l'item */
+        }
+
+        .gallery-item:hover .video-badge {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: var(--primary);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 15px;
+            background: linear-gradient(to top, rgba(15, 10, 30, 0.95), rgba(15, 10, 30, 0.6), transparent);
+            color: #fff;
+            font-size: 0.9rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+
+        /* Visionneuse Lightbox Plein Écran */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 10, 30, 0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox img, 
+        .lightbox video {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none; /* Caché par défaut, affiché dynamiquement via JS */
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 2.5rem;
+            color: #fff;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+            z-index: 2010;
+        }
+
+        .lightbox-close:hover {
+            color: var(--primary);
+        }
+		
+		.filter-notice {
+			max-width: 700px;
+			margin: 0 auto 30px auto;
+			background: rgba(139, 40, 113, 0.15);
+			border: 1px solid var(--primary);
+			padding: 12px 20px;
+			border-radius: 10px;
+			text-align: center;
+			color: var(--light);
+			font-size: 0.95rem;
+			animation: fadeIn 0.3s ease;
+		}
+
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(-5px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+        /* Footer */
+        footer {
+            background: #080510;
+            padding: 30px 10%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #888;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- En-tête -->
+    <header>
+        <a href="index.html" class="logo">
+			<img src="img/logo.png" alt="Logo Fusion Live" class="logo-img">
+			FUSION <span>LIVE</span>
+		</a>
+        <a href="index.html" class="btn-back">← Retour</a>
+    </header>
+
+    <div class="gallery-container">
+        <h1>Galerie & Souvenirs</h1>
+        <p class="subtitle">Plongez dans l'ambiance de la troupe, revivez les répétitions et découvrez l'envers du décor.</p>
+
+        <!-- Filtres par catégorie -->
+        <div class="gallery-filters">
+            <button class="filter-btn active" data-filter="all">Tous</button>
+            <button class="filter-btn" data-filter="photos">Photos</button>
+            <button class="filter-btn" data-filter="videos">Vidéos</button>
+			<button class="filter-btn" data-filter="scene">Sur Scène 2026</button>
+        </div>
+		
+		<div class="filter-notice" id="info" >
+			🎬 Cliquez sur les images pour les agrandir, sur les vidéos pour les lire.
+		</div>
+		
+		<!-- Message spécifique au filtre "scene" -->
+		<div class="filter-notice" id="sceneNotice" style="display: none;">
+			🎬 <strong>Bon à savoir :</strong> Le spectacle sera filmé en intégralité le 20 novembre ! Restez connectés pour découvrir les images.
+		</div>
+
+        <!-- Grille de médias -->
+        <div class="gallery-grid">
+            
+            <div class="gallery-item" data-category="scene" data-type="image" data-src="img/gallery/affiche.jpg">
+                <img src="img/gallery/affiche.jpg" alt="Concert Live" loading="lazy">
+                <div class="gallery-caption">Affiche Spectacle Novembre 2026</div>
+            </div>
+			
+			<div class="gallery-item" data-category="scene" data-type="image" data-src="img/gallery/banner.jpg">
+                <img src="img/gallery/banner.jpg" alt="Concert Live" loading="lazy">
+                <div class="gallery-caption">Fusion Live</div>
+            </div>
+
+            <div class="gallery-item" data-category="videos" data-type="video" data-src="video/banniere_video.mp4">
+                <img src="video/prev-banniere_video.jpg" alt="Aperçu vidéo répétition" loading="lazy">
+                <div class="video-badge">▶</div>
+                <div class="gallery-caption">Rendez-vous en novembre !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="videos" data-type="video" data-src="video/repetition.mp4">
+                <img src="video/prev-repetition.jpg" alt="Aperçu vidéo répétition" loading="lazy">
+                <div class="video-badge">▶</div>
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+
+            <div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/818855117_122139636543171721_7924111564842437959_n.jpg">
+                <img src="img/gallery/818855117_122139636543171721_7924111564842437959_n.jpg" alt="Répétition" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+
+            <div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/808972033_122139237423171721_8982970809311198544_n.jpg">
+                <img src="img/gallery/808972033_122139237423171721_8982970809311198544_n.jpg" alt="Répétition" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/788838333_122136533631171721_8076824938653966367_n.jpg">
+                <img src="img/gallery/788838333_122136533631171721_8076824938653966367_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/788493846_122136487947171721_890612799570158776_n.jpg">
+                <img src="img/gallery/788493846_122136487947171721_890612799570158776_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/727478931_122129521533171721_8886532225458303733_n.jpg">
+                <img src="img/gallery/727478931_122129521533171721_8886532225458303733_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/728305719_122129521437171721_8941908918440017064_n.jpg">
+                <img src="img/gallery/728305719_122129521437171721_8941908918440017064_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/729099623_122129521413171721_384034291923338234_n.jpg">
+                <img src="img/gallery/729099623_122129521413171721_384034291923338234_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/726399971_122129521047171721_7616875747428715583_n.jpg">
+                <img src="img/gallery/726399971_122129521047171721_7616875747428715583_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/727927909_122129520981171721_2889374725334209860_n.jpg">
+                <img src="img/gallery/727927909_122129520981171721_2889374725334209860_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/726517065_122129520939171721_8118834175149144641_n.jpg">
+                <img src="img/gallery/726517065_122129520939171721_8118834175149144641_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/729294208_122129520879171721_2770402540229227012_n.jpg">
+                <img src="img/gallery/729294208_122129520879171721_2770402540229227012_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/727346367_122129520759171721_1607679151881515508_n.jpg">
+                <img src="img/gallery/727346367_122129520759171721_1607679151881515508_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/727446489_122129516823171721_1135471092998780168_n.jpg">
+                <img src="img/gallery/727446489_122129516823171721_1135471092998780168_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/675517422_122120913789171721_6015245958220013434_n.jpg">
+                <img src="img/gallery/675517422_122120913789171721_6015245958220013434_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/673755014_122120913783171721_115650246782715963_n.jpg">
+                <img src="img/gallery/673755014_122120913783171721_115650246782715963_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/673560466_122120913561171721_2408243426076561537_n.jpg">
+                <img src="img/gallery/673560466_122120913561171721_2408243426076561537_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/674055071_122120913555171721_3976942048664324516_n.jpg">
+                <img src="img/gallery/674055071_122120913555171721_3976942048664324516_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/675543143_122120913285171721_4787930627124219882_n.jpg">
+                <img src="img/gallery/675543143_122120913285171721_4787930627124219882_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/672687721_122120912925171721_4984077054861866305_n.jpg">
+                <img src="img/gallery/672687721_122120912925171721_4984077054861866305_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/672687721_122120912925171721_4984077054861866305_n.jpg">
+                <img src="img/gallery/672687721_122120912925171721_4984077054861866305_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/661912679_122119327815171721_6805332718759173362_n.jpg">
+                <img src="img/gallery/661912679_122119327815171721_6805332718759173362_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/662873837_122119327569171721_3316775427488703060_n.jpg">
+                <img src="img/gallery/662873837_122119327569171721_3316775427488703060_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/662648516_122119327419171721_4440971832047912_n.jpg">
+                <img src="img/gallery/662648516_122119327419171721_4440971832047912_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/661424404_122119327233171721_6166030640951994311_n.jpg">
+                <img src="img/gallery/661424404_122119327233171721_6166030640951994311_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/661234590_122119326957171721_4221315325386050592_n.jpg">
+                <img src="img/gallery/661234590_122119326957171721_4221315325386050592_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/663195358_122119326807171721_6799318493832305301_n.jpg">
+                <img src="img/gallery/663195358_122119326807171721_6799318493832305301_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/656066505_122117672727171721_2977705995355740808_n.jpg">
+                <img src="img/gallery/656066505_122117672727171721_2977705995355740808_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/655905483_122117672043171721_8381921550441638963_n.jpg">
+                <img src="img/gallery/655905483_122117672043171721_8381921550441638963_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/656192541_122117671317171721_5819330168548328517_n.jpg">
+                <img src="img/gallery/656192541_122117671317171721_5819330168548328517_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/656184423_122117670711171721_262508675551502963_n.jpg">
+                <img src="img/gallery/656184423_122117670711171721_262508675551502963_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/645801959_122115215199171721_7414210510269123155_n.jpg">
+                <img src="img/gallery/645801959_122115215199171721_7414210510269123155_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/645812617_122115214959171721_5516295792001591987_n.jpg">
+                <img src="img/gallery/645812617_122115214959171721_5516295792001591987_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/645779148_122115214689171721_6420968011036701519_n.jpg">
+                <img src="img/gallery/645779148_122115214689171721_6420968011036701519_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/644479011_122115214491171721_8223425204274178377_n.jpg">
+                <img src="img/gallery/644479011_122115214491171721_8223425204274178377_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/644678048_122115214299171721_8879058524298499301_n.jpg">
+                <img src="img/gallery/644678048_122115214299171721_8879058524298499301_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/644291221_122115214143171721_4930346475664224539_n.jpg">
+                <img src="img/gallery/644291221_122115214143171721_4930346475664224539_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">Ca bosse en répétitions !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/643139809_122115213933171721_5709744532485560353_n.jpg">
+                <img src="img/gallery/643139809_122115213933171721_5709744532485560353_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/619291449_122110506141171721_6324564850635047192_n.jpg">
+                <img src="img/gallery/619291449_122110506141171721_6324564850635047192_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/619622665_122110505985171721_1008758696828901463_n.jpg">
+                <img src="img/gallery/619622665_122110505985171721_1008758696828901463_n.jpg" alt="La troupe" loading="lazy">
+                <div class="gallery-caption">La troupe en sourire !</div>
+            </div>
+			
+
+
+        </div>
+    </div>
+
+    <!-- Visionneuse Lightbox (gère images et vidéos) -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <img id="lightboxImg" src="" alt="Agrandissement photo">
+        <video id="lightboxVideo" controls preload="none"></video>
+    </div>
+
+    <footer>
+        <p>© 2026 Fusion Live - Saint-Martin-des-Noyers. Tous droits réservés.</p>
+    </footer>
+
+    <!-- Script de filtrage et visionneuse multimédia -->
+    <script>
+        // Gestion des filtres
+		const filterBtns = document.querySelectorAll('.filter-btn');
+		const galleryItems = document.querySelectorAll('.gallery-item');
+		const sceneNotice = document.getElementById('sceneNotice'); // On cible notre message
+
+		filterBtns.forEach(btn => {
+			btn.addEventListener('click', () => {
+				document.querySelector('.filter-btn.active').classList.remove('active');
+				btn.classList.add('active');
+
+				const filter = btn.getAttribute('data-filter');
+
+				// Afficher ou cacher le message selon le filtre actif
+				if (filter === 'scene') {
+					sceneNotice.style.display = 'block';
+				} else {
+					sceneNotice.style.display = 'none';
+				}
+
+				// Filtrer les éléments de la grille
+				galleryItems.forEach(item => {
+					if (filter === 'all' || item.getAttribute('data-category') === filter) {
+						item.style.display = 'block';
+					} else {
+						item.style.display = 'none';
+					}
+				});
+			});
+		});
+
+        // Gestion de la Lightbox (Images et Vidéos)
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxVideo = document.getElementById('lightboxVideo');
+        const lightboxClose = document.getElementById('lightboxClose');
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const type = item.getAttribute('data-type');
+                const src = item.getAttribute('data-src');
+
+                if (type === 'image') {
+                    lightboxImg.src = src;
+                    lightboxImg.style.display = 'block';
+                    lightboxVideo.style.display = 'none';
+                } else if (type === 'video') {
+                    lightboxVideo.src = src;
+                    lightboxVideo.style.display = 'block';
+                    lightboxImg.style.display = 'none';
+                    lightboxVideo.play(); // Lance la lecture automatique avec le son
+                }
+
+                lightbox.classList.add('active');
+            });
+        });
+
+        // Fonction pour fermer la lightbox et couper proprement la vidéo
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            lightboxVideo.pause();
+            lightboxVideo.currentTime = 0; // Remet la vidéo au début
+            lightboxVideo.src = ''; // Libère la source
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
