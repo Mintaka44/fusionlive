@@ -1,0 +1,6 @@
+# Autoriser tous les robots à explorer tout le site
+User-agent: *
+Allow: /
+
+# Indiquer l'emplacement du sitemap pour accélérer l'indexation
+Sitemap: https://troupe-fusionlive.fr/sitemap.xml

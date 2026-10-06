@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    
+    <!-- Page d'accueil -->
+    <url>
+        <loc>https://troupe-fusionlive.fr</loc>
+        <lastmod>2026-10-06</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Page Galerie -->
+    <url>
+        <loc>https://ton-site-github.io/gallery.html</loc>
+        <lastmod>2026-10-06</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Page Reservation -->
+    <url>
+        <loc>https://troupe-fusionlive.fr/reservation.html</loc>
+        <lastmod>2026-10-06</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+</urlset>
