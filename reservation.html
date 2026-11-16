@@ -138,11 +138,21 @@
             transform: translateY(-3px);
         }
 
+        .date-tab.past {
+            opacity: 0.6;
+        }
+
+        .date-tab.past:hover {
+            border-color: rgba(255, 255, 255, 0.05);
+            transform: none;
+        }
+
         /* Style de la date active (en cours de réservation) */
         .date-tab.active {
             background: var(--primary);
             border-color: var(--primary);
             box-shadow: 0 5px 20px rgba(139, 40, 113, 0.4);
+            opacity: 1;
         }
 
         .date-tab h3 {
@@ -272,7 +282,7 @@
             border-radius: 15px;
             padding: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            min-height: 780px;
+            min-height: 400px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -281,6 +291,14 @@
         .widget-wrapper {
             width: 100%;
             height: 820px;
+        }
+
+        .spectacle-termine {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         iframe {
@@ -326,13 +344,13 @@
 		
         <!-- Les 4 onglets de dates -->
         <div class="date-tabs">			
-            <div class="date-tab" onclick="selectDate('date1')" id="tab-date1">
+            <div class="date-tab past" onclick="selectDate('date1')" id="tab-date1">
                 <h3>Samedi 14 Nov</h3>
-                <p>20h00</p>
+                <p>Terminé</p>
             </div>
-            <div class="date-tab" onclick="selectDate('date2')" id="tab-date2">
+            <div class="date-tab past" onclick="selectDate('date2')" id="tab-date2">
                 <h3>Dimanche 15 Nov</h3>
-                <p>15h00</p>
+                <p>Terminé</p>
             </div>
             <div class="date-tab" onclick="selectDate('date3')" id="tab-date3">
                 <h3>Vendredi 20 Nov</h3>
@@ -403,8 +421,8 @@
     <!-- Script de gestion dynamique -->
     <script>
         const helloAssoWidgets = {
-            date1: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-samedi-14-11-2027/widget",
-            date2: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-dimanche-15-11-2027/widget",
+            date1: null,
+            date2: null,
             date3: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-vendredi-20-11-2027/widget",
             date4: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-samedi-21-11-2027/widget"
         };
@@ -429,7 +447,7 @@
                     </div>
                 `;
             } else {
-                container.innerHTML = `<p style="color: #aaa;">Lien de billetterie bientôt disponible pour cette date.</p>`;
+                container.innerHTML = `<div class="spectacle-termine">Spectacle terminé</div>`;
             }
         }
 
@@ -490,7 +508,7 @@
             if (requestedDate && helloAssoWidgets[requestedDate]) {
                 selectDate(requestedDate);
             } else {
-                selectDate('date1');
+                selectDate('date3');
             }
         });
     </script>
