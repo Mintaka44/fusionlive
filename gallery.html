@@ -323,18 +323,18 @@
 		
 		<!-- Message spécifique au filtre "scene" -->
 		<div class="filter-notice" id="sceneNotice" style="display: none;">
-			🎬 <strong>Bon à savoir :</strong> Le spectacle sera filmé le 20 novembre ! Restez connectés pour découvrir les images.
+			🎬 <strong>Bon à savoir :</strong> Le spectacle sera filmé le 20 novembre ! Restez connectés pour découvrir plus d'images.
 		</div>
 
         <!-- Grille de médias -->
         <div class="gallery-grid">
             
-            <div class="gallery-item" data-category="scene" data-type="image" data-src="img/gallery/affiche.jpg">
+            <div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/affiche.jpg">
                 <img src="img/gallery/affiche.jpg" alt="Concert Live" loading="lazy">
                 <div class="gallery-caption">Affiche Spectacle Novembre 2026</div>
             </div>
 			
-			<div class="gallery-item" data-category="scene" data-type="image" data-src="img/gallery/banner.jpg">
+			<div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/banner.jpg">
                 <img src="img/gallery/banner.jpg" alt="Concert Live" loading="lazy">
                 <div class="gallery-caption">Fusion Live</div>
             </div>
@@ -350,10 +350,16 @@
                 <div class="gallery-caption">Le spectacle approche !</div>
             </div>
 			
-			<div class="gallery-item" data-category="videos" data-type="video" data-src="video/manu.mp4">
+			<div class="gallery-item" data-category="videos scene" data-type="video" data-src="video/manu.mp4">
                 <img src="video/prev-manu.jpg" alt="Aperçu vidéo répétition" loading="lazy">
                 <div class="video-badge">▶</div>
                 <div class="gallery-caption">Martin est présent !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="videos scene" data-type="video" data-src="video/coulisses.mp4">
+                <img src="video/prev-coulisses.jpg" alt="Aperçu photos spectacle" loading="lazy">
+                <div class="video-badge">▶</div>
+                <div class="gallery-caption">Des images de la scenes !</div>
             </div>
 
             <div class="gallery-item" data-category="videos" data-type="video" data-src="video/banniere_video.mp4">
@@ -397,7 +403,17 @@
                 <div class="video-badge">▶</div>
                 <div class="gallery-caption">Coulisses de l'aventure !</div>
             </div>
-
+			
+			<div class="gallery-item" data-category="photos scene" data-type="image" data-src="img/gallery/913392866_122145974127171721_6575466811413765144_n.jpg">
+                <img src="img/gallery/913392866_122145974127171721_6575466811413765144_n.jpg" alt="Sur scene" loading="lazy">
+                <div class="gallery-caption">Sur scène !</div>
+            </div>
+			
+			<div class="gallery-item" data-category="photos scene" data-type="image" data-src="img/gallery/912664985_122145827505171721_7628697581160705380_n.jpg">
+                <img src="img/gallery/912664985_122145827505171721_7628697581160705380_n.jpg" alt="Sur scene" loading="lazy">
+                <div class="gallery-caption">Sur scène !</div>
+            </div>			
+			
             <div class="gallery-item" data-category="photos" data-type="image" data-src="img/gallery/818855117_122139636543171721_7924111564842437959_n.jpg">
                 <img src="img/gallery/818855117_122139636543171721_7924111564842437959_n.jpg" alt="Répétition" loading="lazy">
                 <div class="gallery-caption">Ca bosse en répétitions !</div>
@@ -607,34 +623,38 @@
     <!-- Script de filtrage et visionneuse multimédia -->
     <script>
         // Gestion des filtres
-		const filterBtns = document.querySelectorAll('.filter-btn');
-		const galleryItems = document.querySelectorAll('.gallery-item');
-		const sceneNotice = document.getElementById('sceneNotice'); // On cible notre message
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const sceneNotice = document.getElementById('sceneNotice');
 
-		filterBtns.forEach(btn => {
-			btn.addEventListener('click', () => {
-				document.querySelector('.filter-btn.active').classList.remove('active');
-				btn.classList.add('active');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.filter-btn.active').classList.remove('active');
+                btn.classList.add('active');
 
-				const filter = btn.getAttribute('data-filter');
+                const filter = btn.getAttribute('data-filter');
 
-				// Afficher ou cacher le message selon le filtre actif
-				if (filter === 'scene') {
-					sceneNotice.style.display = 'block';
-				} else {
-					sceneNotice.style.display = 'none';
-				}
+                // Afficher ou cacher le message selon le filtre actif
+                if (filter === 'scene') {
+                    sceneNotice.style.display = 'block';
+                } else {
+                    sceneNotice.style.display = 'none';
+                }
 
-				// Filtrer les éléments de la grille
-				galleryItems.forEach(item => {
-					if (filter === 'all' || item.getAttribute('data-category') === filter) {
-						item.style.display = 'block';
-					} else {
-						item.style.display = 'none';
-					}
-				});
-			});
-		});
+                // Filtrer les éléments de la grille
+                galleryItems.forEach(item => {
+                    // On récupère les catégories de l'élément (ex: "photos scene") sous forme de tableau
+                    const itemCategories = item.getAttribute('data-category').split(' ');
+
+                    // Si le filtre est "all", ou si le tableau contient la catégorie cliquée
+                    if (filter === 'all' || itemCategories.includes(filter)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
 
         // Gestion de la Lightbox (Images et Vidéos)
         const lightbox = document.getElementById('lightbox');
