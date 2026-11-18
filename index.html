@@ -416,8 +416,47 @@
             text-decoration: underline;
             color: #ffca2c;
         }
+		
+		/* Badge "Dernières places" ou "Bientôt complet" */
+        .date-card {
+            position: relative; /* Nécessaire pour positionner le badge en absolu dedans */
+        }
+
+        .badge-places {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 193, 7, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+		
+		/* Badge "Places libres" en vert discret */
+        .badge-places-libres {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid #28a745;
+            color: #2ecc71;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+		
     </style>
+	
 	<script data-goatcounter="https://troupe-fusionlive.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+	
 </head>
 <body>
 
@@ -475,12 +514,14 @@
                 <p>15h00</p>
                 <span href="reservation.html?date=date2" class="btn btn-primary">Spectacle terminé</span>
             </div>
-            <div class="date-card">
+            <div class="date-card" style="border-color: rgba(255, 193, 7, 0.3);">
+                <span class="badge-places">Bientôt complet</span>
                 <h3>Vendredi 20 Nov</h3>
                 <p>20h00</p>
                 <a href="reservation.html?date=date3" class="btn btn-primary">Je réserve</a>
             </div>
-            <div class="date-card">
+            <div class="date-card" style="position: relative;">
+                <span class="badge-places-libres">Places libres</span>
                 <h3>Samedi 21 Nov</h3>
                 <p>20h00</p>
                 <a href="reservation.html?date=date4" class="btn btn-primary">Je réserve</a>
@@ -580,6 +621,9 @@
         // Sécurité : si la connexion est lente, affichage forcé au bout de 4 secondes max
         setTimeout(revealPage, 4000);
     </script>
+	
+	
+	
 
 </body>
 </html>
