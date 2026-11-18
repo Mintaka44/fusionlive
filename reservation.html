@@ -316,6 +316,53 @@
             color: #888;
             font-size: 0.85rem;
         }
+		
+		.date-tab {
+            position: relative; /* Nécessaire pour le badge */
+        }
+
+        .badge-tab {
+            display: inline-block;
+            background: rgba(255, 193, 7, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Ajustement quand l'onglet est actif pour garder une bonne visibilité du badge */
+        .date-tab.active .badge-tab {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+            color: white;
+        }
+		
+		/* Badge vert pour les onglets */
+        .badge-tab-libre {
+            display: inline-block;
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid #28a745;
+            color: #2ecc71;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .date-tab.active .badge-tab-libre {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+            color: white;
+        }
+		
     </style>
 </head>
 <body>
@@ -355,10 +402,12 @@
             <div class="date-tab" onclick="selectDate('date3')" id="tab-date3">
                 <h3>Vendredi 20 Nov</h3>
                 <p>20h00</p>
+                <div class="badge-tab">Dernières places !</div>
             </div>
             <div class="date-tab" onclick="selectDate('date4')" id="tab-date4">
                 <h3>Samedi 21 Nov</h3>
                 <p>20h00</p>
+                <div class="badge-tab-libre">Places libres</div>
             </div>
         </div>
 
