@@ -453,6 +453,22 @@
             text-transform: uppercase;
         }
 		
+		/* Badge "Complet" en rouge discret */
+        .badge-complet {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(220, 53, 69, 0.16);
+            border: 1px solid #dc3545;
+            color: #ff6b7a;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+		
     </style>
 	
 	<script data-goatcounter="https://troupe-fusionlive.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -493,7 +509,7 @@
         <h1>Vibrez avec la troupe Fusion Live !</h1>
         <p>Chant, danse, musique live et bonne humeur garantie. Deux week-ends de folie pour en prendre plein les yeux et les oreilles !</p>
         <div class="hero-buttons">
-            <a href="reservation.html?date=date1" class="btn btn-primary">🎟️ Réserver mes places</a>
+            <a href="reservation.html?date=date4" class="btn btn-primary">🎟️ Réserver mes places</a>
             <a href="#about" class="btn btn-secondary">🎬 Découvrir la troupe</a>
         </div>
     </section>
@@ -515,10 +531,10 @@
                 <span href="reservation.html?date=date2" class="btn btn-primary">Spectacle terminé</span>
             </div>
             <div class="date-card" style="border-color: rgba(255, 193, 7, 0.3);">
-                <span class="badge-places">Bientôt complet</span>
+                <span class="badge-complet">Complet</span>
                 <h3>Vendredi 20 Nov</h3>
                 <p>20h00</p>
-                <a href="reservation.html?date=date3" class="btn btn-primary">Je réserve</a>
+				<span href="reservation.html?date=date2" class="btn btn-primary">Spectacle complet</span>
             </div>
             <div class="date-card" style="position: relative;">
                 <span class="badge-places-libres">Places libres</span>
