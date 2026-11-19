@@ -123,6 +123,7 @@
         }
 
         .date-tab {
+            position: relative;
             background: var(--dark-card);
             border: 2px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
@@ -301,6 +302,14 @@
             font-weight: 600;
         }
 
+        .reservation-complet {
+            text-align: center;
+            padding: 60px 20px;
+            color: #ff6b7a;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
         iframe {
             width: 100%;
             height: 100%;
@@ -316,33 +325,8 @@
             color: #888;
             font-size: 0.85rem;
         }
-		
-		.date-tab {
-            position: relative; /* Nécessaire pour le badge */
-        }
 
-        .badge-tab {
-            display: inline-block;
-            background: rgba(255, 193, 7, 0.15);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            font-size: 0.65rem;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-top: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Ajustement quand l'onglet est actif pour garder une bonne visibilité du badge */
-        .date-tab.active .badge-tab {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: white;
-            color: white;
-        }
-		
-		/* Badge vert pour les onglets */
+        /* Badge vert pour les onglets */
         .badge-tab-libre {
             display: inline-block;
             background: rgba(40, 167, 69, 0.15);
@@ -362,7 +346,27 @@
             border-color: white;
             color: white;
         }
-		
+
+        /* Badge rouge pour les onglets */
+        .badge-tab-complet {
+            display: inline-block;
+            background: rgba(220, 53, 69, 0.16);
+            border: 1px solid #dc3545;
+            color: #ff6b7a;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .date-tab.active .badge-tab-complet {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -402,7 +406,7 @@
             <div class="date-tab" onclick="selectDate('date3')" id="tab-date3">
                 <h3>Vendredi 20 Nov</h3>
                 <p>20h00</p>
-                <div class="badge-tab">Dernières places !</div>
+                <div class="badge-tab-complet">Complet</div>
             </div>
             <div class="date-tab" onclick="selectDate('date4')" id="tab-date4">
                 <h3>Samedi 21 Nov</h3>
@@ -455,7 +459,7 @@
 
         <!-- Zone d'affichage du widget HelloAsso -->
         <div class="widget-box" id="widgetContainer">
-            <!-- Les iframes HelloAsso s'injecteront ici dynamiquement -->
+            <!-- Les iframes HelloAsso ou messages d'état s'injecteront ici dynamiquement -->
         </div>
     </div>
 
@@ -472,8 +476,14 @@
         const helloAssoWidgets = {
             date1: null,
             date2: null,
-            date3: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-vendredi-20-11-2027/widget",
+            date3: null,
             date4: "https://www.helloasso.com/associations/fusion-live-st-martin/evenements/spectacle-du-samedi-21-11-2027/widget"
+        };
+
+        const closedMessages = {
+            date1: `<div class="spectacle-termine">Spectacle terminé</div>`,
+            date2: `<div class="spectacle-termine">Spectacle terminé</div>`,
+            date3: `<div class="reservation-complet">Réservation terminée - complet</div>`
         };
 
         function selectDate(dateKey) {
@@ -496,7 +506,7 @@
                     </div>
                 `;
             } else {
-                container.innerHTML = `<div class="spectacle-termine">Spectacle terminé</div>`;
+                container.innerHTML = closedMessages[dateKey] || `<div class="spectacle-termine">Spectacle terminé</div>`;
             }
         }
 
@@ -554,10 +564,10 @@
             const urlParams = new URLSearchParams(window.location.search);
             const requestedDate = urlParams.get('date');
 
-            if (requestedDate && helloAssoWidgets[requestedDate]) {
+            if (requestedDate && Object.prototype.hasOwnProperty.call(helloAssoWidgets, requestedDate)) {
                 selectDate(requestedDate);
             } else {
-                selectDate('date3');
+                selectDate('date4');
             }
         });
     </script>
